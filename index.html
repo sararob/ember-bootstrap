@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="jquery.js"></script>
+	<script src="handlebars.js"></script>
+	<script src="http://builds.emberjs.com/tags/v1.9.1/ember.js"></script>
+	<script src="http://builds.emberjs.com/tags/v1.0.0-beta.12/ember-data.js"></script>
+	<script src="https://cdn.firebase.com/js/client/2.1.1/firebase.js"></script>
+	<script src="https://cdn.firebase.com/libs/emberfire/1.3.2/emberfire.min.js"></script>
+</head>
+<body>
+	<script type="text/x-handlebars" data-template-name="application">
+		Sara's App
+		{{#link-to 'about'}}About{{/link-to}}
+		{{#link-to 'messages'}}Messages{{/link-to}}
+		{{outlet}}
+	</script>
+
+	<script type="text/x-handlebars" data-template-name="about">
+		<div>I built a chat app. Woot.</div>
+	</script>
+
+	<script type="text/x-handlebars" data-template-name="messages">
+		<div>This will be displayed on every message route, cool!</div>
+
+		{{#link-to 'messages.new'}}Add a new message{{/link-to}}
+
+		{{#each message in model}}
+			<div>{{message.name}}: {{message.body}}</div>
+		{{/each}}
+
+		{{outlet}}
+	</script>
+
+	<script type="text/x-handlebars" data-template-name="messages/index">
+
+	</script>
+
+	<script type="text/x-handlebars" data-template-name="messages/new">
+		{{input type="text" placeholder="Name" value=name}}
+		{{input type="text" placeholder="Message" value=body}}
+		<button {{action 'addMessage'}}>Submit</button>
+	</script>
+
+	<script>
+		window.App = Ember.Application.create();
+
+		App.ApplicationAdapter = DS.FixtureAdapter;
+
+		// To use EmberFire: comment out the fixtures below
+		// and uncomment the FirebaseAdapter
+
+		// App.ApplicationAdapter = DS.FirebaseAdapter.extend({
+		// 	firebase: new Firebase("https://ember-bootstrap.firebaseio.com/")
+		// });
+
+		//ROUTER
+		App.Router.map(function() {
+			this.route("about", {path: "/about"});
+			this.resource("messages", {path: "/messages"}, function() {
+				this.route("new");
+			});
+		});
+
+		//MODEL
+		App.Message = DS.Model.extend({
+			name: DS.attr('string'),
+			body: DS.attr('string')
+		});
+
+		//FIXTURES
+		App.Message.reopenClass({
+			FIXTURES: [
+				{
+					id: 1,
+					name: 'Sara',
+					body: 'Hey!'
+				},
+				{
+					id: 2,
+					name: 'Firebot',
+					body: 'Hello there!'
+				}
+			]
+		});
+
+		//Routes
+		App.MessagesRoute = Ember.Route.extend({
+			model: function() {
+				return this.store.find('message');
+			}
+		});
+
+		//CONTROLLERS
+
+		App.MessagesNewController = Ember.ObjectController.extend({
+			actions: {
+				addMessage: function() {
+					console.log(this.get('name'));
+					var newMessage = this.store.createRecord('message', {
+						name: this.get('name'),
+						body: this.get('body')
+					});
+					newMessage.save();
+					this.transitionToRoute('messages');
+				}
+			}
+		});
+
+	</script>
+</body>
+</html>
