@@ -1,0 +1,9 @@
+{
+  "firebase": "ember-bootstrap",
+  "public": ".",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}
