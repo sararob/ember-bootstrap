@@ -24,7 +24,6 @@
 		</div>
 	</script>
 
-
 	<script type="text/x-handlebars" data-template-name="about">
 		<div>I built a chat app!</div>
 	</script>
@@ -32,18 +31,18 @@
 
 	<script type="text/x-handlebars" data-template-name="messages">
 
+		This content will appear on every sub-route of /messages. Cool!
+
 		<div class="new-msg-link">{{#link-to 'messages.new'}}Add a new message{{/link-to}}</div>
 
 		{{outlet}}
 
 		<div class="chat-messages">
 			{{#each message in model}}
-				<div class="each-msg">
-				<span class="name">{{message.name}}</span>: {{message.body}}</div>
+				<div class="each-msg"><span class="name">{{message.name}}</span>: {{message.body}}</div>
 			{{/each}}
 		</div>
 	</script>
-
 
 	<script type="text/x-handlebars" data-template-name="messages/new">
 		<div class="new-msg-form">
@@ -54,15 +53,7 @@
 	</script>
 
 	<script>
-
-		window.App = Ember.Application.create();
-
-		// To use EmberFire: comment out the fixtures below
-		// and uncomment the FirebaseAdapter
-
-		// App.ApplicationAdapter = DS.FirebaseAdapter.extend({
-		// 	firebase: new Firebase("https://ember-bootstrap.firebaseio.com/")
-		// });
+		window.App = Ember.Application.create({});
 
 		//ROUTER
 		App.Router.map(function() {
@@ -72,30 +63,11 @@
 			});
 		});
 
-		//MODEL
+		//MODELS
 		App.Message = DS.Model.extend({
 			name: DS.attr('string'),
 			body: DS.attr('string'),
 			published: DS.attr('number')
-		});
-
-		// //FIXTURES
-
-		App.ApplicationAdapter = DS.FixtureAdapter;
-
-		App.Message.reopenClass({
-			FIXTURES: [
-				{
-					id: 1,
-					name: 'Sara',
-					body: 'Hey!'
-				},
-				{
-					id: 2,
-					name: 'Firebot',
-					body: 'Hello there!'
-				}
-			]
 		});
 
 		//ROUTES
@@ -105,7 +77,36 @@
 			}
 		});
 
+		// ADAPTERS
+
+		App.ApplicationAdapter = DS.FixtureAdapter;
+
+		App.Message.reopenClass({
+			FIXTURES: [
+				{
+					id: 1,
+					name: 'Sara',
+					body: 'Hey!',
+					published: 1422511243875
+				},
+				{
+					id: 2,
+					name: 'Firebot',
+					body: 'Hello there!',
+					published: 1422511243875
+				}
+			]
+		});
+
+		// To use EmberFire: comment out the fixtures
+		// and uncomment the FirebaseAdapter
+
+		// App.ApplicationAdapter = DS.FirebaseAdapter.extend({
+		// 	firebase: new Firebase("https://ember-bootstrap.firebaseio.com/")
+		// });
+
 		//CONTROLLERS
+
 		App.MessagesNewController = Ember.ObjectController.extend({
 			actions: {
 				addMessage: function() {
